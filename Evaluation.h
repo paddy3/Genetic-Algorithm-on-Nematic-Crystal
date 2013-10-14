@@ -65,6 +65,7 @@ return pot;
 public:
 
 Evaluation(double r=1 , double la=1, double maxPot=1./0.) : rho(r), f(64), s(1), l(la), maxPot(maxPot) {
+rho*=0.52359877559/pow(s,3);
 	double *var= new double[5];
 	double epsilon=pow(10,-20);
 	
