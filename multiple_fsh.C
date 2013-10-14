@@ -99,7 +99,6 @@ assert(ps_count == pop_size);
 		int n;
 		n=sum=qsum=maxi= 0;
 		mini=1./0.;
-cout << "values: " << endl;		
 		for (it=mylist->begin();it!=mylist->end();) {
 			val = it->Energy();
 			if (val != val || val<=0) {
@@ -107,7 +106,6 @@ cout << "values: " << endl;
 cout << "deleted list element  " << val << endl;
 					continue;
 			}
-cout << val << endl;			
 			sum += val;
 			qsum += val*val;
 			maxi=max(maxi,val);
