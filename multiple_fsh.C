@@ -211,29 +211,24 @@ cout << "optimiere..." << endl;
 	
 cout << "optimiert: " << endl;
 	
+	best.Unique(bas,bas_len,var);
+
 	eval.Disp_Array(ang,2);
 	eval.Disp_Array(var,5);
 	eval.Disp_Array(bas,bas_len);
 cout << endl;
-
-	best.Unique(bas,bas_len,var);
 	
-	new_pot=eval.Calc_Pot(var,bas,bas_len,ang);
-	
-
+	cout << "energy " << new_pot << endl;
 	
 //########	
 
-	cout << "energy " << new_pot << endl;
 
-//	if (new_pot<min_pot) {
-	if (true) {
+	if (new_pot<min_pot) {
 		min_pot=new_pot;
 		for (int i=0;i<2;i++)
 			min_ang[i] = ang[i];
 		for (int i=0;i<5;i++)
 			min_var[i] = var[i];
-		
 		
 		min_baslen = bas_len;
 		
