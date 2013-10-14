@@ -24,10 +24,17 @@ return 5./18*pow(rf,3)*(s/r/(1+rf/2)*exp(-rf*(r-s)/2*s));
 */
 
 double Star_Pot(double r, double ct){
-	if(r<=s) 
-		return -log(r/s)+1/(1+sqrt(l)/2);
+	double pot=0;
 
-return s/(1+sqrt(f)/2)*exp(-sqrt(f)/2*(r-s)/s)/r;
+	if(! r)
+		return 0;
+
+	if(r<=s) 
+		pot = -log(r/s)+1/(1+sqrt(l)/2);
+	else
+		pot = s/(1+sqrt(f)/2)*exp(-sqrt(f)/2*(r-s)/s)/r;
+//cout << "calc Star_Pot(r,ct): ( " << r << " , " << ct << " )  " <<pot << endl;
+return pot;
 }
 
 double Pot_Sum(double * arr, double len, int n,int i) {
@@ -65,7 +72,7 @@ return pot;
 public:
 
 Evaluation(double r=1 , double la=1, double maxPot=1./0.) : rho(r), f(64), s(1), l(la), maxPot(maxPot) {
-rho*=0.52359877559/pow(s,3);
+rho =0.52359877559/pow(s,3)/rho;
 	double *var= new double[5];
 	double epsilon=pow(10,-20);
 	
