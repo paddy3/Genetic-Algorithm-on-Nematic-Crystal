@@ -25,7 +25,7 @@ return 5./18*pow(rf,3)*(s/r/(1+rf/2)*exp(-rf*(r-s)/2*s));
 
 double Star_Pot(double r, double ct){
 	if(r<=s) 
-		return -ln(r/s)+1/(1+sqrt(l)/2);
+		return -log(r/s)+1/(1+sqrt(l)/2);
 
 return s/(1+sqrt(f)/2)*exp(-sqrt(f)/2*(r-s)/s)/r;
 }
