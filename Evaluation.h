@@ -24,20 +24,10 @@ return 5./18*pow(rf,3)*(s/r/(1+rf/2)*exp(-rf*(r-s)/2*s));
 */
 
 double Star_Pot(double r, double ct){
+	if(r<=s) 
+		return -ln(r/s)+1/(1+sqrt(l)/2);
 
-	double sigma=0, eps=1;
-	
-	if (! r)
-		return eps;
-		
-	double sq=1+(1./(l*l)-1)*ct*ct;
-if (sq < 0) {
-	// Fehler
-	return 0;
-}	
-	sigma= s/sqrt(sq);
-//cout << r << "  " << ct << "  " <<  sigma << ": ";	
-return eps*exp(-1*pow(r/sigma,1));
+return s/(1+sqrt(f)/2)*exp(-sqrt(f)/2*(r-s)/s)/r;
 }
 
 double Pot_Sum(double * arr, double len, int n,int i) {
