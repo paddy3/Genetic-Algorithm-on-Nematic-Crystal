@@ -1,2 +1,2 @@
-Genetic-Algorithm-on-Nematic-Crystal
+Genetic Algorithm on Nematic Crystal
 ====================================
