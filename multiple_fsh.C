@@ -226,7 +226,8 @@ cout << endl;
 
 	cout << "energy " << new_pot << endl;
 
-	if (new_pot<min_pot) {
+//	if (new_pot<min_pot) {
+	if (true) {
 		min_pot=new_pot;
 		for (int i=0;i<2;i++)
 			min_ang[i] = ang[i];
@@ -243,7 +244,7 @@ cout << endl;
 	}
 } // for runs
 
-	cout << "Gewonnene Energie:" << endl;
+	cout << endl << "Gewonnene Energie:" << endl;
 	eval.Disp_Array(min_ang,2);
 	eval.Disp_Array(min_var,5);
 	eval.Disp_Array(min_bas,min_baslen);
