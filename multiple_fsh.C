@@ -217,7 +217,8 @@ cout << "optimiert: " << endl;
 	eval.Disp_Array(var,5);
 	eval.Disp_Array(bas,bas_len);
 cout << endl;
-	
+
+	new_pot=eval.Calc_Pot(var,bas,bas_len,ang);	
 	cout << "energy " << new_pot << endl;
 	
 //########	
