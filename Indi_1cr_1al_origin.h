@@ -53,9 +53,9 @@ int Sort(double **Mat,int len); //back to protected
 //int Surface_min(double **Mat); //back to protected
 double Surface_min(double **Mat); //original is with int
 
-static int const LEN_GENEL=31;
-static int const ARC_GENEL=31;
-static int const BAS_GENEL=31;
+static int const LEN_GENEL=12;
+static int const ARC_GENEL=6;
+static int const BAS_GENEL=12;
 
 Indi_1cr_1al_origin();
 Indi_1cr_1al_origin(int basis_n);
