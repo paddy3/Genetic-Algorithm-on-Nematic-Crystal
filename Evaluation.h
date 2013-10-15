@@ -30,9 +30,9 @@ double Star_Pot(double r, double ct){
 		return 0;
 
 	if(r<=s) 
-		pot = -log(r/s)+1/(1+sqrt(l)/2);
+		pot = pow(f,1.5)*(1/(1+sqrt(l)/2)-log(r/s));
 	else
-		pot = s/(1+sqrt(f)/2)*exp(-sqrt(f)/2*(r-s)/s)/r;
+		pot = pow(f,1.5)*s/(1+sqrt(f)/2)*exp(-sqrt(f)/2*(r-s)/s)/r;
 //cout << "calc Star_Pot(r,ct): ( " << r << " , " << ct << " )  " <<pot << endl;
 return pot;
 }
