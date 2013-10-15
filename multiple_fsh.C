@@ -210,8 +210,8 @@ cout << "optimiere..." << endl;
 	eval.Climb(var,bas,bas_len,ang);
 	
 cout << "optimiert: " << endl;
-	
-	best.Unique(bas,bas_len,var);
+
+	//best.Unique(bas,bas_len,var); //changes energy for some reason
 
 	eval.Disp_Array(ang,2);
 	eval.Disp_Array(var,5);
