@@ -257,10 +257,9 @@ cout << endl;
 	
 	var[0]=1;
 	var[1]=1;
-	var[2]=1.57;
-	var[3]=0.785;
-	//var[4]=1.57;
-	var[4]=0.785;
+	var[2]=1.0472;
+	var[3]=1.0472;
+	var[4]=0.955317;
 
 	eval.Disp_Array(var,5);
 	cout << "  " << eval.Calc_Pot(var,basis,blen) << endl;		
