@@ -17,6 +17,7 @@ double GridDiff(MatrixXf,MatrixXf,int dim);
 int main(int argc, char* argv[]) {
 	
 	double x,y,phi,psi,theta;
+	int rotN[]={6,4,3,2};
 	double r_max=0;
 
 	
@@ -36,6 +37,7 @@ cout << "gridNumber: " << gridN << endl;
 cout << "rmax: " << r_max << endl;
 	
 	
+	// part where grid points are selected
 	double x2[] = {x*abs(cos(phi)),x*sin(phi)};
 	double x3[] = {x*y*sin(psi)*abs(cos(theta)),
 				    x*y*cos(psi)*abs(cos(theta)),x*y*sin(theta)};
@@ -90,9 +92,9 @@ cout << "rmax: " << r_max << endl;
 
 
 cout << "GridNumber: " << gridN << endl;
-
-	MatrixXf ausConf(3,gridN), resConf(3,gridN);
+	
 	int matC=0;
+	MatrixXf ausConf(3,gridN), resConf(3,gridN);
 	
 	for(int  k=-kmax;k<=kmax;k++) {
 		rt=pow(r_max,2)-pow(k*x3[2],2);
@@ -135,7 +137,8 @@ cout << "GridNumber: " << gridN << endl;
 			}// for j (y)
 		}// for i (x)		
 	}// for k (z)
-
+	// end grid point selection
+	
 	Matrix3f rotAxisM,rotM;
 	Vector3f rotV;
 	
@@ -145,16 +148,20 @@ cout << "GridNumber: " << gridN << endl;
 	double diff=0;
 	
 	for (int axis=0;axis<3;axis++) {
-		for (int i=0;i<3;i++)
-			rotV(i)=rotAxisM(axis,i);
-			
-		rotM=AngleAxisf(2*PI/4,rotV);
+		for (int rotC=0;rotC<4;rotC++) {
+			for (int i=0;i<3;i++)
+				rotV(i)=rotAxisM(axis,i);
+				
+			rotM=AngleAxisf(2*PI/rotN[rotC],rotV);
 
-		resConf=rotM*ausConf;
-						
-		diff=GridDiff(ausConf,resConf,gridN);
-		cout << "Axis " << axis+1 << ": " << diff << endl;
-	}
+			resConf=rotM*ausConf;
+							
+			diff=GridDiff(ausConf,resConf,gridN);
+			cout << "Axis " << axis+1 << " rotN " << rotN[rotC] <<": ";
+			cout << diff << endl;
+		}//for rotC	
+	}//for axis
+	
 return 0;
 }
 
