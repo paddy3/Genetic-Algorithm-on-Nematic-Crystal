@@ -136,8 +136,8 @@ cout << "Phi value error " << phi << endl;
 	double x2[] = {a*x*abs(cos(phi)),a*x*sin(phi)};
 	//double x3[] = {a*x*y*sin(psi)*abs(cos(theta)),
 	//			    a*x*y*cos(psi)*abs(cos(theta)),a*x*y*sin(theta)};
-	double x3[] = {a*x*y*cos(psi)*abs(cos(theta)),
-				    a*x*y*sin(psi)*abs(cos(theta)),a*x*y*sin(theta)};
+	double x3[] = {x*y*sin(psi)*abs(cos(theta)),
+				    x*y*cos(psi)*abs(cos(theta)),x*y*sin(theta)};
 			
 	double b1=0, b2=0, b3=0, by=0, bx=0;	  
 	double B1=0, B2=0, B3=0, By=0, Bx=0;	  
