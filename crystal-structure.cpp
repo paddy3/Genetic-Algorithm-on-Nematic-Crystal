@@ -3,6 +3,7 @@
 #include<cmath>
 #include<fstream>
 #include<cassert>
+#include<list>
 
 #include<Eigen/Dense>
 
@@ -12,7 +13,21 @@ using namespace Eigen;
 
 double const PI = 4*atan(1);
 
+struct Axis {
+	double value;
+	Vector3f axis;
+} ;
+bool operator< (Axis in1, Axis in2) {return in1.value < in2.value;}
+
 double GridDiff(MatrixXf,MatrixXf,int dim);
+Axis Optimal_Axis(const MatrixXf, int dim, Matrix3f (*Operation)(double,Vector3f), double);
+
+Matrix3f Rotation(double ang, Vector3f ax) {
+	Matrix3f result;
+	result=AngleAxisf(ang,ax);
+return result;
+}
+int PM(int val) {if (val<=0) return -1; return 1;}
 
 int main(int argc, char* argv[]) {
 	
@@ -139,39 +154,94 @@ cout << "GridNumber: " << gridN << endl;
 	}// for k (z)
 	// end grid point selection
 	
-	Matrix3f rotAxisM,rotM;
-	Vector3f rotV;
+	Axis axisOpti;
 	
-	rotAxisM << 1,0,0,cos(phi),sin(phi),0,
-			sin(psi)*cos(theta),cos(psi)*cos(theta),sin(theta);
+	axisOpti=Optimal_Axis(ausConf, gridN, Rotation, 2*PI/2);
 	
-	double diff=0;
+	cout << "optimal axis: " << axisOpti.value << endl;
+	cout << axisOpti.axis.transpose() << endl;
 	
-	for (int axis=0;axis<3;axis++) {
-		for (int rotC=0;rotC<4;rotC++) {
-			for (int i=0;i<3;i++)
-				rotV(i)=rotAxisM(axis,i);
-				
-			rotM=AngleAxisf(2*PI/rotN[rotC],rotV);
-
-			resConf=rotM*ausConf;
-							
-			diff=GridDiff(ausConf,resConf,gridN);
-			cout << "Axis " << axis+1 << " rotN " << rotN[rotC] <<": ";
-			cout << diff << endl;
-		}//for rotC	
-	}//for axis
+	
 	
 return 0;
+}
+
+Axis Optimal_Axis(const MatrixXf ausM, int dim, Matrix3f (*Operation) (double,Vector3f), double angle) {
+	list<Axis> axisL;
+	list<Axis>::iterator axisI;
+	
+	Axis axisNew;
+	Matrix3f operM;
+	MatrixXf resM(3,dim);
+	Vector3f lastAxis;
+	
+	double diffSum=0;
+	int loopC=0;
+	
+	axisNew.axis=Vector3f::UnitX();
+		operM=(*Operation)(angle,axisNew.axis);
+		axisNew.value=GridDiff(ausM,operM*ausM,dim);
+		axisL.push_back(axisNew);		
+
+	axisNew.axis=Vector3f::UnitY();
+		operM=(*Operation)(angle,axisNew.axis);
+		axisNew.value=GridDiff(ausM,operM*ausM,dim);
+		axisL.push_back(axisNew);	
+	
+	axisNew.axis=Vector3f::UnitZ();
+		operM=(*Operation)(angle,axisNew.axis);
+		axisNew.value=GridDiff(ausM,operM*ausM,dim);
+		axisL.push_back(axisNew);	
+
+	
+	axisL.sort();
+	loopC=0;
+	do {
+		axisL.resize(3);
+		diffSum=0;
+		for (axisI=axisL.begin(); axisI != axisL.end(); axisI++)
+			diffSum+=axisI->value;
+			
+for (axisI=axisL.begin(); axisI != axisL.end(); axisI++)
+	cout << axisI->axis.transpose() << "  : " << axisI->value << endl;
+	
+		for (int pmC=0;pmC<4;pmC++) {
+			axisI=axisL.begin();
+				axisNew.axis=(1-axisI->value/diffSum)*axisI->axis;
+			axisI++;
+				axisNew.axis+=PM(pmC%2)*(1-axisI->value/diffSum)*axisI->axis;
+			axisI++;
+				axisNew.axis+=PM(pmC%3)*(1-axisI->value/diffSum)*axisI->axis;
+			
+			axisNew.axis/=axisNew.axis.norm();
+			
+			operM=(*Operation)(angle,axisNew.axis);
+			axisNew.value=GridDiff(ausM,operM*ausM,dim);
+			axisL.push_back(axisNew);
+			
+cout << "   val pmC " << pmC << ": " << axisNew.value << endl;
+cout << axisNew.axis << endl;			
+		} // for pmC
+		
+		axisL.sort();
+		axisI=axisL.begin();
+cout << "value loopC " << loopC << ": " << axisI->value << endl;
+cout << axisI->axis << endl;
+
+	loopC++;
+	} while (loopC < 4 );
+	
+return *axisL.begin();		
 }
 
 double GridDiff(const MatrixXf ausM, const MatrixXf resM, int dim) {
 	
 	double diffSum=0,diffMin=0,diff=0;
+	double diffSet=pow(10,7);
 	double ausLen=0;
 	
 	for (int ausC=0; ausC<dim; ausC++) {
-		diffMin=1./0;
+		diffMin=diffSet;
 		for (int resC=0; resC<dim; resC++) {
 			diff=0;
 			for (int i=0; i<3; i++)
