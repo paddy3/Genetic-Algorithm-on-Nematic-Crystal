@@ -24,10 +24,23 @@ Axis Optimal_Axis(const MatrixXf, Matrix3f (*Operation)(double,Vector3f), double
 
 Axis Optimal_Axis_Climb(const MatrixXf, Matrix3f (*Operation)(double,Vector3f), double);
 
-Matrix3f Rotation(double ang, Vector3f ax) {
+Matrix3f Rotate(double ang, Vector3f ax) {
 	Matrix3f result;
 	result=AngleAxisf(ang,ax);
 return result;
+}
+
+Matrix3f RotRef(double ang, Vector3f ax) {
+	Matrix3f rotate;
+	rotate=AngleAxisf(ang,ax);
+	
+	MatrixXf reflecV(1,3);
+		reflecV=ax;
+	Matrix3f reflecM=Matrix3f::Identity();
+	
+	reflecM-=2*reflecV*reflecV.transpose();
+	
+return reflecM*rotate;
 }
 
 int PM(int val) {if (val<=0) return -1; return 1;}
@@ -38,7 +51,11 @@ int main(int argc, char* argv[]) {
 	int rotN[]={6,4,3,2};
 	double r_max=0;
 
-	
+	int opN=2;
+	Matrix3f (*opArr[2])(double,Vector3f) = {NULL};
+		opArr[0]=&Rotate;
+		opArr[1]=&RotRef;
+		
 	if (argc != 7)
 		return 1;
 
@@ -165,19 +182,24 @@ cout << "GridNumber: " << gridN << endl;
 
 	for (int rotC=0; rotC<4; rotC++) {
 	cout << endl << "  Rotation N: " << rotN[rotC] << endl;
-		
-		axisOpti=Optimal_Axis(ausConf, Rotation, 2*PI/rotN[rotC],val);
-		
-		cout << endl;
-		cout << "optimal axis: " << axisOpti.value << endl;
-		cout << axisOpti.axis.transpose() << endl;
-		
-		axisOptiClimb=Optimal_Axis_Climb(ausConf, Rotation, 2*PI/rotN[rotC]);
-		
-		cout << endl;
-		cout << "optimal axis climb: " << axisOptiClimb.value << endl;
-		cout << axisOptiClimb.axis.transpose() << endl;
-	}	
+		for (int opC=0; opC<opN; opC++) {
+			cout << "Operation " << opC << endl;
+			
+	/*		axisOpti=Optimal_Axis(ausConf, opArr[opC], 2*PI/rotN[rotC],val);
+				axisOpti.value/=gridN;
+			cout << endl;
+			cout << "optimal axis: " << axisOpti.value << endl;
+			cout << axisOpti.axis.transpose() << endl;
+	*/		
+
+			axisOptiClimb=Optimal_Axis_Climb(ausConf, opArr[opC], 2*PI/rotN[rotC]);
+				axisOptiClimb.value/=gridN;
+			
+			cout << endl;
+			cout << "optimal axis climb: " << axisOptiClimb.value << endl;
+			cout << axisOptiClimb.axis.transpose() << endl;
+		}// for opC
+	}// for rotC	
 cout << endl;
 return 0;
 }
@@ -327,26 +349,22 @@ return res;
 double GridDiff(const MatrixXf ausM, const MatrixXf resM) {
 	
 	double diffSum=0,diffMin=0,diff=0;
-	double diffSet=pow(10,7);
-	double ausLen=0;
+	double diffSet=pow(10,10);
 	int dim=ausM.cols();
+	
+	Vector3f diffV;
 	
 	for (int ausC=0; ausC<dim; ausC++) {
 		diffMin=diffSet;
 		for (int resC=0; resC<dim; resC++) {
-			diff=0;
-			for (int i=0; i<3; i++)
-				diff+= pow(ausM(i,ausC)-resM(i,resC),2);
-			diff=sqrt(diff);
+			diffV=ausM.col(ausC)-resM.col(resC);
+			diff=diffV.norm();
 			
 			if (diff<diffMin)
 				diffMin=diff;
 		}//for resC
-	ausLen=0;
-	for (int i=0; i<3; i++)
-		ausLen+=pow(ausM(i,ausC),2);
 		
-	diffSum+=diffMin/ausLen;
+	diffSum+=diffMin/ausM.col(ausC).norm();
 	}// for ausC
 
 return diffSum;	
